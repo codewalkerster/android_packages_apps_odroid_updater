@@ -1,0 +1,18 @@
+android_app {
+    name: "Updater",
+    platform_apis: true,
+    certificate: "platform",
+    system_ext_specific: true,
+    privileged: true,
+    srcs: ["java/**/*.kt"],
+    resource_dirs: ["res"],
+    static_libs: [
+        "androidx-constraintlayout_constraintlayout",
+        "androidx.appcompat_appcompat",
+        "androidx.core_core",
+        "androidx.lifecycle_lifecycle-livedata",
+        "androidx.lifecycle_lifecycle-viewmodel",
+        "androidx.preference_preference",
+        "com.google.android.material_material",
+    ],
+}
