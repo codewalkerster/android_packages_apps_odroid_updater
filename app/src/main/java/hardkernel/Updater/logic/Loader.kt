@@ -6,36 +6,59 @@ import android.net.Uri
 import android.os.RecoverySystem
 import android.util.Log
 
+import androidx.documentfile.provider.DocumentFile
+
 import java.io.File
 import java.io.IOException
 
 public class Loader (val context: Context?) {
 
-    private val debug: Boolean = false
+    private val debug: Boolean = true
+    private lateinit var uri:Uri
 
     @Throws(IOException::class)
     fun updateFromLocal(uri: Uri): Boolean {
-        val packageFile = File(getPathFrom(uri))
+        this.uri = uri
 
+        try {
+            val packageFile = File(getPathFrom())
+
+            install(packageFile)
+        } catch (e: IOException) {
+            throw IOException(e)
+        }
+
+        return true
+    }
+
+    @Throws(IOException::class)
+    private fun install (packageFile: File) {
         try {
             RecoverySystem.installPackage(context, packageFile)
         } catch (e: IOException) {
             throw IOException(e)
         }
-        return true
     }
 
-    fun getPathFrom(uri: Uri): String {
+    @Throws(IOException::class)
+    private fun getPathFrom(): String? {
         if (debug)
-            Log.d("Loader", "This is uri - " + uri.getPath())
+            Log.d("Loader", "This is uri - " + uri.path)
         val cursor: Cursor = context!!.getContentResolver().query(uri, null, null, null, null)
 
         if (debug)
             Log.d("Loader", cursorToString(cursor))
-        val path = getRealPathFrom(cursor)
-        return path
+
+        try {
+            return getRealPathFrom(cursor)
+        } catch (e:Exception) {
+            throw IOException(e)
+        }
+
+        return null
     }
 
+    @Throws(IOException::class)
     private fun getRealPathFrom(cursor: Cursor):String {
         var realPath = ""
         if(cursor.moveToFirst()) {
@@ -46,12 +69,24 @@ public class Loader (val context: Context?) {
                 "primary" -> {
                     "/data/media/0/" + subDocId[1]
                 }
+                "raw" -> {
+                    val replacedPath = if (subDocId[1].startsWith("/storage/emulated/0"))
+                        "/data/media/0" +  subDocId[1].removePrefix("/storage/emulated/0")
+                        else
+                            subDocId[1]
+                    replacedPath
+                }
+                "msf" -> {
+                    throw IOException("msf: format is not implemented yet")
+                }
                 else -> {
                     // Todo change path fit realPath
                     "/storage/" + subDocId[0] + "/" + subDocId[1]
                 }
             }
         }
+        if (debug)
+            Log.d("Loader", "real path - " + realPath)
         return realPath
     }
 

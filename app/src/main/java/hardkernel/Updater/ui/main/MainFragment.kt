@@ -55,7 +55,7 @@ class MainFragment : Fragment() {
                     } catch(e: IOException) {
                         Toast.makeText(getContext(), "Error" + e,
                             Toast.LENGTH_LONG).show()
-                            Log.d("Updater", "Error" + e)
+                            Log.d("Updater", "Error, Try with direct selection, " + e)
                     }
                 }
             }
