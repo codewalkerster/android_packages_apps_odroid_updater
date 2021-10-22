@@ -17,4 +17,10 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
 
     <string name="update_from_local">Update From Local</string>
+    <string name="update_from_online">Update From Online</string>
+    <string name="url">Online URL</string>
+    <string name="official">Official</string>
+    <string name="mirror">Mirror</string>
+    <string name="custom">Custom</string>
+    <string name="select_online_server">Select Online Server</string>
 </resources>

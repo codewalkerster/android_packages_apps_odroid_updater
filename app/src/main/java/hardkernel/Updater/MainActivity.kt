@@ -2,6 +2,8 @@ package hardkernel.Updater
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import hardkernel.Updater.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {

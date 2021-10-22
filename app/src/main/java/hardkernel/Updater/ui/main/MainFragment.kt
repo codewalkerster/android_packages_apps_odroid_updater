@@ -1,13 +1,8 @@
 package hardkernel.Updater.ui.main
 
-import hardkernel.Updater.logic.Loader
-
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import hardkernel.Updater.R
 import android.widget.Button
 import android.widget.Toast
@@ -15,6 +10,11 @@ import android.content.Intent
 import android.app.Activity.RESULT_OK
 import java.io.IOException
 import android.util.Log
+import android.view.*
+import android.widget.TextView
+import hardkernel.Updater.Logic.ServerManager
+import hardkernel.Updater.Service.UpdateService
+import hardkernel.Updater.ui.dialog.ServerSelectDialog
 
 class MainFragment : Fragment() {
 
@@ -25,14 +25,13 @@ class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var viewOfLayer: View
 
-    private lateinit var loader: Loader
+    private lateinit var currentServer: TextView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View {
         viewOfLayer = inflater.inflate(R.layout.main_fragment, container, false)
 
-        loader = Loader(getContext())
-        val btn_update_from_local: Button = viewOfLayer.findViewById(R.id.btn_update_from_local);
+        val btn_update_from_local: Button = viewOfLayer.findViewById(R.id.btn_update_from_local)
         btn_update_from_local.setOnClickListener {
             val intent: Intent = Intent().apply {
                 action = Intent.ACTION_GET_CONTENT
@@ -42,7 +41,23 @@ class MainFragment : Fragment() {
             startActivityForResult(intent, 100)
         }
 
-        return viewOfLayer;
+        val btn_update_from_online: Button = viewOfLayer.findViewById(R.id.btn_update_from_online)
+        btn_update_from_online.setOnClickListener {
+            val intent = Intent(context, UpdateService::class.java)
+            intent.action = UpdateService.CMD.REMOTE_UPDATE_START.name
+            intent.putExtra(UpdateService.CMD.REMOTE_UPDATE_START.name, ServerManager.getURL())
+            context?.startService(intent)
+        }
+        currentServer = viewOfLayer.findViewById(R.id.currentServer)
+        currentServer.text = ServerManager.getCurrent().name
+
+        val btn_select_update_server: Button = viewOfLayer.findViewById(R.id.btn_select_update_server)
+        btn_select_update_server.setOnClickListener {
+            val dialog = ServerSelectDialog(this.requireContext())
+            dialog.show()
+        }
+
+        return viewOfLayer
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -51,15 +66,24 @@ class MainFragment : Fragment() {
             when (requestCode) {
                 100 -> {
                     try {
-                        loader.updateFromLocal(data!!.getData())
+                        val intent = Intent(context, UpdateService::class.java)
+                        intent.action = UpdateService.CMD.LOCAL_UPDATE_START.name
+                        intent.putExtra(UpdateService.CMD.LOCAL_UPDATE_START.name, data?.data)
+                        context?.startService(intent)
                     } catch(e: IOException) {
-                        Toast.makeText(getContext(), "Error" + e,
+                        Toast.makeText(
+                            context, "Error $e",
                             Toast.LENGTH_LONG).show()
-                            Log.d("Updater", "Error, Try with direct selection, " + e)
+                            Log.d("Updater", "Error, Try with direct selection, $e")
                     }
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        currentServer.text = ServerManager.getCurrent().name
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -67,5 +91,4 @@ class MainFragment : Fragment() {
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
         // TODO: Use the ViewModel
     }
-
 }
