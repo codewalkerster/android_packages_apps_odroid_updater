@@ -31,7 +31,7 @@ class RemoteUpdater(private val context: Context?, url: String) {
 
     private val DOWNLOAD_DIR = "/storage/emulated/0/Download/"
     private val PACKAGE_MAX_SIZE = 1024 * 1024 * 1024 * 3
-    private val versionMeta = "latestupdate"
+    private val versionMeta = "latestupdate_11"
     init {
         this.url = if (url.indexOf("https://") != 0) {
             var str = StringBuffer(url)
