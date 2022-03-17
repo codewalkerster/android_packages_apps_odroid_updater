@@ -50,9 +50,22 @@ class PackageUpdater(private val context: Context) {
             installIntent)
     }
 
+    fun copyConfig() {
+        try {
+            val config = File("/fat/config.ini")
+            config.copyTo(File("/storage/emulated/0/.config.ini.backup"), true)
+        } catch (e : Exception) {
+            Toast.makeText(context,
+                "Backup the config.ini file is failed",
+                Toast.LENGTH_LONG).show()
+            throw IOException (e)
+        }
+    }
+
     @Throws(IOException::class)
     fun install (file: File) {
         try {
+            copyConfig()
             RecoverySystem.installPackage(context, file)
         } catch (e :Exception) {
             Toast.makeText(
