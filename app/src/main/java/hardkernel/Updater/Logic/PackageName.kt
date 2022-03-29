@@ -1,5 +1,6 @@
 package hardkernel.Updater.Logic
 
+// Default package Name - upcatepackage-<model_name>-<BuildNumaber>-<BuildDate>.zip
 class PackageName(packageName: String) {
     val version: Int
 
