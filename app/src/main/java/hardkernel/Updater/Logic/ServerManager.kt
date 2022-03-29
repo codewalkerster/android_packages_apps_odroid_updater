@@ -13,6 +13,7 @@ object ServerManager {
     private val CURRENT_SERVER_PROPERTY = "persist.update.server.current"
 
     private val DEFAULT_SERVER = "https://dn.odroid.com/RK3568/ODROID-M1/Android/11/"
+    private val DEFAULT_MIRROR_SERVER = "https://www.odroid.in/mirror/dn.odroid.com/RK3568/ODROID-M1/Android/11/"
 
     enum class Server {
         Official,
@@ -24,7 +25,7 @@ object ServerManager {
 
     init {
         OFFICIAL = SysProperty.get(OFFICIAL_PROPERTY, DEFAULT_SERVER)
-        MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_SERVER)
+        MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_MIRROR_SERVER)
         CUSTOM = SysProperty.get(CUSTOM_PROPERTY, "")
 
         val server = SysProperty.get(CURRENT_SERVER_PROPERTY,"Official")
