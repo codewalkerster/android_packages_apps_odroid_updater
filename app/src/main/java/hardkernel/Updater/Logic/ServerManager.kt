@@ -82,4 +82,12 @@ object ServerManager {
         SysProperty.set(CUSTOM_PROPERTY, url)
         saveCurrent(Server.Custom)
     }
+
+    fun getOfficialURL(): String {
+        return OFFICIAL
+    }
+
+    fun getMirrorURL(): String {
+        return MIRROR
+    }
 }

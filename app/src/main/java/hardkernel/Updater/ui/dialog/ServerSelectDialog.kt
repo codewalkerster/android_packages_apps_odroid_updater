@@ -21,6 +21,10 @@ class ServerSelectDialog(context: Context): AlertDialog(context), View.OnClickLi
         val official: RadioButton = findViewById(R.id.official_btn)
         val mirror: RadioButton = findViewById(R.id.mirror_btn)
         val custom: RadioButton = findViewById(R.id.custom_btn)
+
+        official.text = Server.Official.name + " - " + ServerManager.getOfficialURL()
+        mirror.text = Server.Mirror.name + " - " + ServerManager.getMirrorURL()
+
         official.setOnClickListener(this)
         mirror.setOnClickListener(this)
         custom.setOnClickListener(this)
