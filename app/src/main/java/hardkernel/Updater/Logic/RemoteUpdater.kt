@@ -150,7 +150,11 @@ class RemoteUpdater(private val context: Context?, url: String) {
 
     private fun getCurrentVersion(): Int {
         val incremental = Build.VERSION.INCREMENTAL
-        return incremental.toInt()
+        return try {
+            incremental.toInt()
+        } catch (e: Exception) {
+            incremental.split(".")[2].toInt()
+        }
     }
 
     private fun downloadVersion(path: String): Deferred<Boolean> = CoroutineScope(Dispatchers.IO).async {
