@@ -11,6 +11,7 @@ import android.app.Activity.RESULT_OK
 import java.io.IOException
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.SwitchCompat
 import android.widget.TextView
 import hardkernel.Updater.Logic.ServerManager
 import hardkernel.Updater.Service.UpdateService
@@ -55,6 +56,13 @@ class MainFragment : Fragment() {
         btn_select_update_server.setOnClickListener {
             val dialog = ServerSelectDialog(this.requireContext())
             dialog.show()
+        }
+
+        val switch_update: SwitchCompat = viewOfLayer.findViewById(R.id.update_check)
+        switch_update.isChecked = ServerManager.isCheckAtBoot()
+
+        switch_update.setOnCheckedChangeListener { _, isChecked ->
+            ServerManager.setCheckUpdate(isChecked)
         }
 
         return viewOfLayer

@@ -11,6 +11,7 @@ object ServerManager {
     private val MIRROR_PROPERTY = "ro.url.mirror"
     private val CUSTOM_PROPERTY = "persist.update.server.custom"
     private val CURRENT_SERVER_PROPERTY = "persist.update.server.current"
+    private val UPDATE_CHECK_PROPERTY = "persist.update.check"
 
     private val DEFAULT_SERVER = "https://dn.odroid.com/RK3568/ODROID-M1/Android/11/"
     private val DEFAULT_MIRROR_SERVER = "https://www.odroid.in/mirror/dn.odroid.com/RK3568/ODROID-M1/Android/11/"
@@ -90,5 +91,13 @@ object ServerManager {
 
     fun getMirrorURL(): String {
         return MIRROR
+    }
+
+    fun isCheckAtBoot(): Boolean {
+        return SysProperty.get(UPDATE_CHECK_PROPERTY, false)
+    }
+
+    fun setCheckUpdate(check: Boolean) {
+        SysProperty.set(UPDATE_CHECK_PROPERTY, check.toString())
     }
 }

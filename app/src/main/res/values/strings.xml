@@ -23,4 +23,5 @@
     <string name="mirror">Mirror</string>
     <string name="custom">Custom</string>
     <string name="select_online_server">Select Online Server</string>
+    <string name="check_update_at_boot">Check update at Boot</string>
 </resources>
