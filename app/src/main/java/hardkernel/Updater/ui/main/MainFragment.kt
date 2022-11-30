@@ -58,14 +58,31 @@ class MainFragment : Fragment() {
             dialog.show()
         }
 
-        val switch_update: SwitchCompat = viewOfLayer.findViewById(R.id.update_check)
-        switch_update.isChecked = ServerManager.isCheckAtBoot()
-
-        switch_update.setOnCheckedChangeListener { _, isChecked ->
-            ServerManager.setCheckUpdate(isChecked)
-        }
+        setHasOptionsMenu(true)
 
         return viewOfLayer
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.option_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        menu.findItem(R.id.update_check).setChecked(ServerManager.isCheckAtBoot())
+        super.onPrepareOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.update_check -> {
+                val checked = !item.isChecked
+                item.isChecked = checked
+                ServerManager.setCheckUpdate(checked)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
