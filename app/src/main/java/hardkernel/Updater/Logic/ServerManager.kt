@@ -6,15 +6,20 @@ object ServerManager {
     private val OFFICIAL: String
     private val MIRROR: String
     private var CUSTOM: String?
+    private val PRODUCT: String
 
+    private val PRODUCT_NAME_PROPERTY = "ro.product.name"
     private val OFFICIAL_PROPERTY = "ro.url.official"
     private val MIRROR_PROPERTY = "ro.url.mirror"
     private val CUSTOM_PROPERTY = "persist.update.server.custom"
     private val CURRENT_SERVER_PROPERTY = "persist.update.server.current"
     private val UPDATE_CHECK_PROPERTY = "persist.update.check"
 
-    private val DEFAULT_SERVER = "https://dn.odroid.com/RK3568/ODROID-M1/Android/11/"
-    private val DEFAULT_MIRROR_SERVER = "https://www.odroid.in/mirror/dn.odroid.com/RK3568/ODROID-M1/Android/11/"
+    private val DEFAULT_SERVER_M1 = "https://dn.odroid.com/RK3568/ODROID-M1/Android/11/"
+    private val DEFAULT_MIRROR_SERVER_M1 = "https://www.odroid.in/mirror/dn.odroid.com/RK3568/ODROID-M1/Android/11/"
+
+    private val DEFAULT_SERVER_M1S = "https://dn.odroid.com/RK3566/ODROID-M1S/Android/11/"
+    private val DEFAULT_MIRROR_SERVER_M1S = "https://www.odroid.in/mirror/dn.odroid.com/RK3566/ODROID-M1S/Android/11/"
 
     enum class Server {
         Official,
@@ -25,8 +30,22 @@ object ServerManager {
     private var current: Server
 
     init {
-        OFFICIAL = SysProperty.get(OFFICIAL_PROPERTY, DEFAULT_SERVER)
-        MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_MIRROR_SERVER)
+        PRODUCT = SysProperty.get(PRODUCT_NAME_PROPERTY, "odroidm1")
+
+        when (PRODUCT) {
+            "odroidm1" -> {
+                OFFICIAL = SysProperty.get(OFFICIAL_PROPERTY, DEFAULT_SERVER_M1)
+                MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_MIRROR_SERVER_M1)
+            }
+            "odroidm1s" -> {
+                OFFICIAL = SysProperty.get(OFFICIAL_PROPERTY, DEFAULT_SERVER_M1S)
+                MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_MIRROR_SERVER_M1S)
+            }
+            else -> {
+                OFFICIAL = SysProperty.get(OFFICIAL_PROPERTY, DEFAULT_SERVER_M1)
+                MIRROR = SysProperty.get(MIRROR_PROPERTY, DEFAULT_MIRROR_SERVER_M1)
+            }
+        }
         CUSTOM = SysProperty.get(CUSTOM_PROPERTY, "")
 
         val server = SysProperty.get(CURRENT_SERVER_PROPERTY,"Official")
