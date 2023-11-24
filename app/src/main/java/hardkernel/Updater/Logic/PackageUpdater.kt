@@ -54,6 +54,12 @@ class PackageUpdater(private val context: Context) {
         try {
             val config = File("/fat/config.ini")
             config.copyTo(File("/storage/emulated/0/.config.ini.backup"), true)
+            val edid = File("/fat/edid/")
+            val backup = File("/storage/emulated/0/edid/")
+            if (edid.exists()) {
+                backup.mkdir()
+                edid.copyRecursively(backup, true)
+            }
         } catch (e : Exception) {
             Toast.makeText(context,
                 "Backup the config.ini file is failed",
